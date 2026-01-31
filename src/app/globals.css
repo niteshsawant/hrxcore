@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+:root {
+  --primary: #2563eb;
+  /* Royal Blue */
+  --secondary: #64748b;
+  /* Slate */
+  --background: #f8fafc;
+  /* Very light slate */
+  --surface: #ffffff;
+  /* White */
+  --success: #10b981;
+  /* Emerald */
+  --error: #ef4444;
+  /* Red */
+  --text: #1e293b;
+  /* Slate 800 */
+  --text-secondary: #64748b;
+  /* Slate 500 */
+}
+
+body {
+  color: var(--text);
+  background: var(--background);
+  font-family: 'Inter', sans-serif;
+}
+
+/* Glassmorphism utilities */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
