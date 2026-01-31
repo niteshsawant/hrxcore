@@ -2,13 +2,13 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { Task } from '../../../core/types';
-import { TaskState } from '../../../core/constants';
-import { DashboardLayout } from '../../../components/DashboardLayout';
-import { Card } from '../../../components/Card';
-import { Badge } from '../../../components/Badge';
-import { Input } from '../../../components/Input';
-import { Button } from '../../../components/Button';
+import { Task } from '@/core/types';
+import { TaskState } from '@/core/constants';
+import { DashboardLayout } from '@/components/DashboardLayout';
+import { Card } from '@/components/Card';
+import { Badge } from '@/components/Badge';
+import { Input } from '@/components/Input';
+import { Button } from '@/components/Button';
 
 export default function HRTaskDetail() {
     const params = useParams();
