@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from backend.app.api.v1.router import router as api_v1_router
+
 app = FastAPI(title="HRXCORE Backend")
 
 app.add_middleware(
@@ -14,6 +16,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(api_v1_router, prefix="/api/v1")
 @app.get("/health")
-def health_check():
+def legacy_health_check():
     return {"status": "ok"}
