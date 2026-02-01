@@ -60,3 +60,7 @@ out
 
 # typescript
 *.tsbuildinfo
+
+# python
+__pycache__/
+*.pyc
