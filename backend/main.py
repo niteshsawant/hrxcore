@@ -1,20 +1,27 @@
 import os
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import RedirectResponse
 from starlette.middleware.sessions import SessionMiddleware
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from authlib.integrations.starlette_client import OAuth
+
+# =========================
+# APP
+# =========================
 
 app = FastAPI()
 
-# =========================
-# ENV
-# =========================
+app.add_middleware(HTTPSRedirectMiddleware)
 
-SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret")
-GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
-GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+SECRET_KEY = os.environ["SECRET_KEY"]
+GOOGLE_CLIENT_ID = os.environ["GOOGLE_CLIENT_ID"]
+GOOGLE_CLIENT_SECRET = os.environ["GOOGLE_CLIENT_SECRET"]
 
 app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
+
+# =========================
+# OAUTH
+# =========================
 
 oauth = OAuth()
 
@@ -27,7 +34,7 @@ oauth.register(
 )
 
 # =========================
-# HEALTH CHECK
+# HEALTH
 # =========================
 
 @app.get("/")
@@ -35,27 +42,21 @@ def root():
     return {"status": "HRX Core backend running"}
 
 # =========================
-# GOOGLE LOGIN
+# AUTH FLOW
 # =========================
 
-GOOGLE_REDIRECT_URI = "https://hrxcore-868410424369.asia-south1.run.app/auth/google/callback"
-
-
 @app.get("/auth/google")
-async def login_google(request: Request):
-    return await oauth.google.authorize_redirect(
-        request,
-        GOOGLE_REDIRECT_URI
-    )
-
+async def google_login(request: Request):
+    redirect_uri = request.url_for("google_callback")
+    return await oauth.google.authorize_redirect(request, redirect_uri)
 
 @app.get("/auth/google/callback")
-async def auth_google_callback(request: Request):
+async def google_callback(request: Request):
     token = await oauth.google.authorize_access_token(request)
-    user = token.get("userinfo")
+    user = token["userinfo"]
 
-    return JSONResponse({
+    return {
         "email": user["email"],
         "name": user["name"],
         "picture": user["picture"],
-    })
+    }
