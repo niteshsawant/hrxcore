@@ -25,3 +25,41 @@ CHRO_QUESTIONS = [
         "why_it_matters": "CHROs are decision partners, not data providers."
     }
 ]
+
+# backend/app/core/chro_framework.py
+
+from typing import Dict
+
+def evaluate_attrition_risk(snapshot_answers: Dict[str, str]) -> Dict[str, str]:
+    """
+    Converts HR answers into CHRO-level risk interpretation
+    """
+
+    impact_area = snapshot_answers.get("primary_business_impact")
+    time_horizon = snapshot_answers.get("time_to_impact")
+    critical_role = snapshot_answers.get("critical_role")
+    failure_mode = snapshot_answers.get("failure_mode")
+
+    risk_level = "LOW"
+    narrative = []
+
+    # Core CHRO logic
+    if impact_area in ["Revenue", "Project Delivery"]:
+        risk_level = "HIGH"
+        narrative.append("Attrition is directly impacting business execution.")
+
+    if time_horizon in ["Immediate", "3 months"]:
+        risk_level = "HIGH"
+        narrative.append("Impact window is too short for HR-only interventions.")
+
+    if critical_role in ["Engineers", "SDE", "Client-facing roles"]:
+        narrative.append("Loss of critical capability threatens continuity.")
+
+    if failure_mode in ["Business failure", "Revenue volatility"]:
+        risk_level = "CRITICAL"
+        narrative.append("This is an enterprise-level risk, not an HR issue.")
+
+    return {
+        "risk_level": risk_level,
+        "chro_view": " ".join(narrative)
+    }
